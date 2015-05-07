@@ -41,7 +41,7 @@ namespace Zoo
             }
         }
 
-        //As per statistic we have some level of infection each day. This funtion artifitially infects animals
+        //As per statistic we have some level of infection each day. This funtion artifitially infects animal s
         private void StatisticalInfection()
         {
             if (_lastInfection > infectionFrequency)
