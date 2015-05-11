@@ -21,7 +21,7 @@ namespace Zoo
 
         private int _receivedAll;
         private int _dead;
-        public static int Troops = 0;
+        public static int NumCorpses = 0;
         private const int MaxAnimals = 1000;
 
 
@@ -75,10 +75,10 @@ namespace Zoo
             {
                 Interlocked.Exchange(ref _lastInfo, 0);
                 ShowStatus();
-                if (Troops%1000 == 0 && Troops > 0)
+                if (NumCorpses%1000 == 0 && NumCorpses > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Critical troops number: {0}", Troops);
+                    Console.WriteLine("Critical corpse number: {0}", NumCorpses);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Running CG collect");
                     Console.Beep();
@@ -93,7 +93,7 @@ namespace Zoo
         //Show alive animals count, troops and few other params
         private void ShowStatus()
         {
-            Logger.Log("Total received: {0}, Total dead: {1}, Now in zoo: {2}, Troops in zoo: {3}", _receivedAll, _dead, _animals.Count, Troops);
+            Logger.Log("Total received: {0}, Total dead: {1}, Now in zoo: {2}, corpses in zoo: {3}", _receivedAll, _dead, _animals.Count, NumCorpses);
         }
 
 
@@ -119,7 +119,7 @@ namespace Zoo
                 //updated counters/statistic book, it is possible to use Interlocked.Increment for that needs
                 //but as we locked syncObj we don't need that
                 _dead++;
-                Troops++;
+                NumCorpses++;
 
                 //give more animals
                 if (_animals.Count < MaxAnimals && Provider != null)
