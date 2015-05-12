@@ -119,7 +119,7 @@ namespace Zoo.Animals
         {
             _isAlive = false;
             Logger.Log("Ruining animal: {0}, ID = {1}", GetType().Name, _id);
-            Interlocked.Decrement(ref Zoo.Troops);
+            Interlocked.Decrement(ref Zoo.NumCorpses);
             Logger.LogYellow("Ruining animal: {0} finished, ID= {1}", GetType().Name, _id);
         }
 
