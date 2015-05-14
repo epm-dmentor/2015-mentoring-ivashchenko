@@ -1,0 +1,6 @@
+C:\GRep\mentoring-ivashchenko\Practice\IDisposableImplementation\IDisposableImplementation\bin\Debug\IDisposableImplementation.exe.config
+C:\GRep\mentoring-ivashchenko\Practice\IDisposableImplementation\IDisposableImplementation\bin\Debug\IDisposableImplementation.exe
+C:\GRep\mentoring-ivashchenko\Practice\IDisposableImplementation\IDisposableImplementation\bin\Debug\IDisposableImplementation.pdb
+C:\GRep\mentoring-ivashchenko\Practice\IDisposableImplementation\IDisposableImplementation\obj\Debug\IDisposableImplementation.csprojResolveAssemblyReference.cache
+C:\GRep\mentoring-ivashchenko\Practice\IDisposableImplementation\IDisposableImplementation\obj\Debug\IDisposableImplementation.exe
+C:\GRep\mentoring-ivashchenko\Practice\IDisposableImplementation\IDisposableImplementation\obj\Debug\IDisposableImplementation.pdb
