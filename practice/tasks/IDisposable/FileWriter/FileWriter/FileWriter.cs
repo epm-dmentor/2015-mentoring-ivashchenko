@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Convestudo.Unmanaged
 {
-    public class FileWriter: IFileWriter
+    public class FileWriter: IFileWriter, IDisposable
     {
         private readonly IntPtr _fileHandle;
 
@@ -22,6 +22,8 @@ namespace Convestudo.Unmanaged
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern IntPtr CreateFile(string lpFileName, DesiredAccess dwDesiredAccess, ShareMode dwShareMode, IntPtr lpSecurityAttributes, CreationDisposition dwCreationDisposition, FlagsAndAttributes dwFlagsAndAttributes, IntPtr hTemplateFile);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern bool CloseHandle(IntPtr handle);
         /// <summary>
         /// Writes data into a file
         /// </summary>
@@ -51,7 +53,8 @@ namespace Convestudo.Unmanaged
                 FlagsAndAttributes.Normal,
                 IntPtr.Zero);
 
-            ThrowLastWin32Err();
+            if (_fileHandle == IntPtr.Zero)
+                ThrowLastWin32Err();
         }
 
         public void Write(string str)
@@ -78,5 +81,38 @@ namespace Convestudo.Unmanaged
             Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
             return bytes;
         }
+
+        #region IDisposable implementation
+
+        private bool _disposed = false;
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        virtual protected void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (_fileHandle != IntPtr.Zero)
+                {
+                    CloseHandle(_fileHandle);
+                }
+
+                if (disposing)
+                {
+
+                }
+            }
+            _disposed = true;
+        }
+
+        ~FileWriter()
+        {
+            Dispose(false);
+        }
+
+        #endregion
     }
 }

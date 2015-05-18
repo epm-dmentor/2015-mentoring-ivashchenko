@@ -1,32 +1,50 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace Unmanaged
 {
-    public class ApplicationConsole
+    internal static class UnmanagedMethods
     {
-        private const int StdOutputHandle = -11;
-        private readonly IntPtr _consoleHandle;
-
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern IntPtr GetStdHandle(int nStdHandle);
+        internal static extern SafeConsoleHandle GetStdHandle(int nStdHandle);
 
         [DllImport("Kernel32.dll", SetLastError = true)]
-        private static extern bool WriteConsole(
-            IntPtr hConsoleOutput,
+        internal static extern bool WriteConsole(
+            SafeConsoleHandle hConsoleOutput,
             string lpBuffer,
             uint nNumberOfCharsToWrite,
             out uint lpNumberOfCharsWritten,
             IntPtr lpReserved);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool CloseHandle(IntPtr handle);
+        internal static extern bool CloseHandle(IntPtr handle);
+    }
+
+    internal class SafeConsoleHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        private SafeConsoleHandle() : base(true)
+        {
+            
+        }
+
+        protected override bool ReleaseHandle()
+        {
+            return true;
+        }
+    }
+
+    public class ApplicationConsole : IDisposable
+    {
+        private const int StdOutputHandle = -11;
+        private readonly SafeConsoleHandle _consoleSafeHandle;
 
         public ApplicationConsole()
         {
-            _consoleHandle = GetStdHandle(StdOutputHandle);
+            _consoleSafeHandle = UnmanagedMethods.GetStdHandle(StdOutputHandle);
 
-            if (_consoleHandle == IntPtr.Zero)
+            if (_consoleSafeHandle.IsInvalid)
                 throw new InvalidOperationException("Std handle is not available");
 
             //WriteLine("Application console has been initialized");
@@ -34,13 +52,25 @@ namespace Unmanaged
 
         public void WriteLine(string outputStr, params object[] args)
         {
-            if (_consoleHandle == IntPtr.Zero)
-                throw new ObjectDisposedException("Object has been already disposed or was not allocated properly!");
+            if (_consoleSafeHandle.IsInvalid)
+               throw new ObjectDisposedException("Object has been already disposed or was not allocated properly!");
 
             var formatedStr = String.Format(outputStr, args);
             uint charsWritten;
-            WriteConsole(_consoleHandle, formatedStr, (uint)formatedStr.Length, out charsWritten, IntPtr.Zero);
-            WriteConsole(_consoleHandle, "\n", 1, out charsWritten, IntPtr.Zero);
+            UnmanagedMethods.WriteConsole(_consoleSafeHandle, formatedStr, (uint)formatedStr.Length, out charsWritten, IntPtr.Zero);
+            UnmanagedMethods.WriteConsole(_consoleSafeHandle, "\n", 1, out charsWritten, IntPtr.Zero);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(_consoleSafeHandle != null && !_consoleSafeHandle.IsInvalid)
+                _consoleSafeHandle.Dispose();
         }
     }
 }
