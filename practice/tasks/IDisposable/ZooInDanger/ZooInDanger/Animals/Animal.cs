@@ -30,11 +30,14 @@ namespace Zoo.Animals
         public virtual int HungerDeathInterval { get { return hungerDeathInterval; } }
         public virtual int EatInterval { get { return eatInterval; } }
 
+        private byte[] _data;
+
 
         public Animal(IAnimalStatusTracker statusTracker)
         {
             _id = AnimalIdGenerator.GetNewId();
             _statusTracker = statusTracker;
+            _data = new byte[0x14000];
         }
 
         private void OnAged()
@@ -119,7 +122,7 @@ namespace Zoo.Animals
         {
             _isAlive = false;
             Logger.Log("Ruining animal: {0}, ID = {1}", GetType().Name, _id);
-            Interlocked.Decrement(ref Zoo.NumCorpses);
+            Interlocked.Decrement(ref Zoo.Troops);
             Logger.LogYellow("Ruining animal: {0} finished, ID= {1}", GetType().Name, _id);
         }
 

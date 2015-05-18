@@ -21,7 +21,7 @@ namespace Zoo
 
         private int _receivedAll;
         private int _dead;
-        public static int NumCorpses = 0;
+        public static int Troops = 0;
         private const int MaxAnimals = 1000;
 
 
@@ -41,7 +41,7 @@ namespace Zoo
             }
         }
 
-        //As per statistic we have some level of infection each day. This funtion artifitially infects animals
+        //As per statistic we have some level of infection each day. This funtion artifitially infects animal   s
         private void StatisticalInfection()
         {
             if (_lastInfection > infectionFrequency)
@@ -75,10 +75,10 @@ namespace Zoo
             {
                 Interlocked.Exchange(ref _lastInfo, 0);
                 ShowStatus();
-                if (NumCorpses%1000 == 0 && NumCorpses > 0)
+                if (Troops%1000 == 0 && Troops > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Critical corpse number: {0}", NumCorpses);
+                    Console.WriteLine("Critical troops number: {0}", Troops);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Running CG collect");
                     Console.Beep();
@@ -93,7 +93,7 @@ namespace Zoo
         //Show alive animals count, troops and few other params
         private void ShowStatus()
         {
-            Logger.Log("Total received: {0}, Total dead: {1}, Now in zoo: {2}, corpses in zoo: {3}", _receivedAll, _dead, _animals.Count, NumCorpses);
+            Logger.Log("Total received: {0}, Total dead: {1}, Now in zoo: {2}, Troops in zoo: {3}", _receivedAll, _dead, _animals.Count, Troops);
         }
 
 
@@ -119,7 +119,7 @@ namespace Zoo
                 //updated counters/statistic book, it is possible to use Interlocked.Increment for that needs
                 //but as we locked syncObj we don't need that
                 _dead++;
-                NumCorpses++;
+                Troops++;
 
                 //give more animals
                 if (_animals.Count < MaxAnimals && Provider != null)
